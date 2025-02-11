@@ -21,6 +21,7 @@
 - **Componenti Principali**:
   - **Login/Registrazione**: Pagina per l'autenticazione degli utenti.
   - **Gestione Scorte**: Interfaccia per visualizzare, aggiungere, aggiornare e cancellare le scorte.
+  - **Gestione Categorie, Fornitori, Ordini e Dettagli Ordini**: Interfacce per la gestione di queste entità.
   - **Report**: Visualizzazione di report sulle scorte.
 
 ### Backend (Laravel)
@@ -31,10 +32,21 @@
   - MySQL come sistema di gestione del database
 
 - **API Endpoints**:
-  - `/api/auth/login` - Autenticazione dell'utente
-  - `/api/auth/register` - Registrazione di nuovi utenti
-  - `/api/inventory` - Gestione delle scorte (GET, POST, PUT, DELETE)
-  - `/api/reports` - Generazione di report sulle scorte
+
+  - **Pubbliche (non richiedono autenticazione)**:
+
+    - `/login` - Autenticazione dell'utente (POST)
+    - `/register` - Registrazione di nuovi utenti (POST)
+
+  - **Autenticate (richiedono autenticazione via Sanctum)**:
+    - `/user` - Ottieni informazioni sull'utente corrente (GET)
+    - `/logout` - Disconnettere l'utente (POST)
+    - `/user-profile` - Ottieni il profilo dell'utente (GET)
+    - `/products` - CRUD per i prodotti (GET, POST, PUT, PATCH, DELETE)
+    - `/categories` - CRUD per le categorie (GET, POST, PUT, PATCH, DELETE)
+    - `/suppliers` - CRUD per i fornitori (GET, POST, PUT, PATCH, DELETE)
+    - `/orders` - CRUD per gli ordini (GET, POST, PUT, PATCH, DELETE)
+    - `/order-details` - CRUD per i dettagli dell'ordine (GET, POST, PUT, PATCH, DELETE)
 
 ### Database (MySQL)
 
@@ -42,7 +54,9 @@
   - `users`: Per la gestione degli utenti.
   - `products`: Per le informazioni sul prodotto (nome, quantità, prezzo, ecc.).
   - `categories`: Per categorizzare i prodotti.
-  - `inventory_logs`: Per tracciare le modifiche alle scorte.
+  - `suppliers`: Per gestire le informazioni sui fornitori.
+  - `orders`: Per tracciare gli ordini.
+  - `order_details`: Per i dettagli specifici degli ordini (prodotti associati, quantità, ecc.).
 
 ## Installazione e Avvio
 

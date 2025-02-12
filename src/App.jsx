@@ -1,92 +1,143 @@
-import { useState } from 'react'
-
-import './App.css'
+// Importiamo React e i suoi hook. 'useState' ci permette di gestire lo stato all'interno dei componenti, mentre 'useEffect' è usato per gestire effetti collaterali, come il recupero dei dati.
+import React, { useState, useEffect } from "react";
+// Importiamo axios, una libreria per effettuare richieste HTTP dal browser.
+import axios from "axios";
+// Importiamo i componenti di routing da react-router-dom. 'Router' gestisce la navigazione, 'Route' definisce le rotte, 'Routes' è un contenitore per più 'Route', 'Navigate' per la navigazione programmata.
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+// Importiamo i componenti personalizzati per le diverse parti dell'applicazione.
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import Products from "./components/Products";
+import Categories from "./components/Categories";
+import Suppliers from "./components/Suppliers";
+import Orders from "./components/Orders";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+// Importiamo il file CSS per lo stile dell'app.
+import "./App.css";
 
 function App() {
+  // Qui usiamo useState per tenere traccia se un utente è autenticato o meno.
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Usiamo useState per gestire lo stato di caricamento mentre verifichiamo l'autenticazione.
+  const [loading, setLoading] = useState(true);
 
-  const [activeTab, setActiveTab] = useState('login');
+  // Questo effetto si esegue una volta quando il componente viene montato per controllare se l'utente è autenticato, cercando un token nel localStorage.
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("token");
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+      if (token) {
+        try {
+          // Facciamo una chiamata API per verificare se il token è valido. Se è valido, l'utente è considerato autenticato.
+          await axios.get("http://127.0.0.1:8000/api/user", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setIsAuthenticated(true);
+        } catch (error) {
+          // Se il token non è valido (risposta 401 Unauthorized), lo rimuoviamo dal localStorage.
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token");
+          }
+          setIsAuthenticated(false);
+        }
+      }
+      // Una volta completata la verifica, impostiamo loading a false per permettere il rendering dell'app.
+      setLoading(false);
+    };
+
+    checkToken();
+  }, []);
+
+  // Se l'app è ancora nel processo di verifica dell'autenticazione, mostriamo un messaggio di caricamento.
+  if (loading) return <div>Caricamento...</div>;
+
+  // Questo componente crea una rotta privata. Se l'utente non è autenticato, lo reindirizza alla pagina di login.
+  const PrivateRoute = ({ children }) => {
+    return isAuthenticated ? children : <Navigate to="/login" />;
   };
 
-  return (
-    <>
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-      <div className="w-100" style={{ maxWidth: "400px" }}>
-        <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-          <li className="nav-item" role="presentation">
-            <button 
-              className={`nav-link ${activeTab === 'login' ? 'active' : ''}`} 
-              id="tab-login" 
-              onClick={() => handleTabChange('login')}
-              role="tab"
-              aria-controls="pills-login" 
-              aria-selected={activeTab === 'login'}
-            >
-              Login
-            </button>
-          </li>
-          <li className="nav-item" role="presentation">
-            <button 
-              className={`nav-link ${activeTab === 'register' ? 'active' : ''}`} 
-              id="tab-register" 
-              onClick={() => handleTabChange('register')}
-              role="tab"
-              aria-controls="pills-register" 
-              aria-selected={activeTab === 'register'}
-            >
-              Register
-            </button>
-          </li>
-        </ul>
-
-        <div className="tab-content">
-          <div className={`tab-pane fade ${activeTab === 'login' ? 'show active' : ''}`} id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <form>
-              <div className="text-center mb-3">
-                <p>Sign in with:</p>
-                {/* Aggiungi qui i tuoi bottoni per i social media */}
-              </div>
-
-              <p className="text-center">or:</p>
-
-              <div className="form-outline mb-4">
-                <input type="email" id="loginName" className="form-control" />
-                <label className="form-label" htmlFor="loginName">Email or username</label>
-              </div>
-
-              <div className="form-outline mb-4">
-                <input type="password" id="loginPassword" className="form-control" />
-                <label className="form-label" htmlFor="loginPassword">Password</label>
-              </div>
-
-              <div className="row mb-4">
-                <div className="col-md-6 d-flex justify-content-center">
-                  <div className="form-check mb-3 mb-md-0">
-                    <input className="form-check-input" type="checkbox" value="" id="loginCheck" checked />
-                    <label className="form-check-label" htmlFor="loginCheck"> Remember me </label>
-                  </div>
-                </div>
-
-                <div className="col-md-6 d-flex justify-content-center">
-                  <a href="#!">Forgot password?</a>
-                </div>
-              </div>
-
-              <button type="submit" className="btn btn-primary btn-block mb-4">Sign in</button>
-
-              <div className="text-center">
-                <p>Not a member? <a href="#!">Register</a></p>
-              </div>
-            </form>
-          </div>
-          {/* Qui va il contenuto per il tab di registrazione */}
-        </div>
-      </div>
+  // Questo è un componente di layout che avvolge il contenuto principale con Navbar e Footer, garantendo un layout consistente tra le pagine.
+  const Layout = ({ children }) => (
+    <div className="d-flex flex-column min-vh-100">
+      <Navbar
+        isAuthenticated={isAuthenticated}
+        setIsAuthenticated={setIsAuthenticated}
+      />
+      <main className="flex-grow-1">{children}</main>
+      <Footer />
     </div>
-    </>
-  )
+  );
+
+  // Qui inizia il rendering principale del componente App, dove configuriamo il sistema di routing.
+  return (
+    <Router>
+      <Routes>
+        {/*  Rotta per la pagina di login, accessibile a tutti. */}
+        <Route path="/login" element={<Login />} />
+        {/* /Rotta per il dashboard, avvolta in PrivateRoute e Layout per assicurare autenticazione e layout coerente. */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        {/* Configurazione simile per le pagine di Prodotti, Categorie, Fornitori e Ordini. */}
+        <Route
+          path="/products"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Products />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Categories />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/suppliers"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Suppliers />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Orders />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+// Esportiamo il componente App in modo che possa essere utilizzato altrove, tipicamente in index.js per il rendering.
+export default App;

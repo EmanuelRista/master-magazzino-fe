@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchCategories = createAsyncThunk(
-  "categories/fetchCategories",
+export const fetchSuppliers = createAsyncThunk(
+  "suppliers/fetchSuppliers",
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
@@ -10,7 +10,7 @@ export const fetchCategories = createAsyncThunk(
         throw new Error("Token non trovato");
       }
 
-      const response = await axios.get("http://127.0.0.1:8000/api/categories", {
+      const response = await axios.get("http://127.0.0.1:8000/api/suppliers", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

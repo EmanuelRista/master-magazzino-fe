@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCategories } from "../thunks/categoriesThunk";
+import { fetchSuppliers } from "../thunks/suppliersThunk";
 
-const categoriesSlice = createSlice({
-  name: "categories",
+const suppliersSlice = createSlice({
+  name: "suppliers",
   initialState: {
     items: [],
     status: "idle",
@@ -11,18 +11,18 @@ const categoriesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCategories.pending, (state) => {
+      .addCase(fetchSuppliers.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchCategories.fulfilled, (state, action) => {
+      .addCase(fetchSuppliers.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.items = action.payload;
       })
-      .addCase(fetchCategories.rejected, (state, action) => {
+      .addCase(fetchSuppliers.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
   },
 });
 
-export default categoriesSlice.reducer;
+export default suppliersSlice.reducer;

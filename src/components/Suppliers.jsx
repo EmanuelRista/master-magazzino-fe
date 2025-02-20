@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSuppliers } from "../thunks/suppliersThunk";
+import Table from "./Table";
 
 function Suppliers() {
   const dispatch = useDispatch();
@@ -18,64 +19,52 @@ function Suppliers() {
     return <div className="container mt-5">Errore: {error}</div>;
   }
 
+  const title = "Fornitori";
+
+  // Definizione delle colonne
+  const columns = [
+    { label: "Nome Fornitore", key: "supplier_name" },
+    { label: "Indirizzo", key: "address" },
+    { label: "Telefono", key: "phone" },
+    { label: "email", key: "email" },
+    {
+      label: "Ordini",
+      render: (item) =>
+        item.orders && item.orders.length > 0
+          ? item.orders.map((order) => order.id).join(", ")
+          : "Nessun Ordine",
+    },
+  ];
+
+  // Definizione delle azioni
+  const actions = [
+    {
+      label: "Visualizza",
+      icon: "eye",
+      color: "primary",
+      onClick: (item) => console.log("Visualizza", item),
+    },
+    {
+      label: "Modifica",
+      icon: "edit",
+      color: "success",
+      onClick: (item) => console.log("Modifica", item),
+    },
+    {
+      label: "Elimina",
+      icon: "trash",
+      color: "danger",
+      onClick: (item) => console.log("Elimina", item),
+    },
+  ];
+
   return (
-    <div className="container mt-5">
-      <h1>Fornitori</h1>
-      <table className="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Nome Fornitore</th>
-            <th scope="col">Indirizzo</th>
-            <th scope="col">Telefono</th>
-            <th scope="col">Email</th>
-            <th scope="col">Ordini</th>
-            <th scope="col">Azioni</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((supplier) => (
-            <tr key={supplier.id}>
-              <td>{supplier.supplier_name}</td>
-              <td>{supplier.address}</td>
-              <td>{supplier.phone}</td>
-              <td>{supplier.email}</td>
-              <td>
-                <ul className="list-unstyled">
-                  {supplier.orders.map((order) => (
-                    <li key={order.id}>#{order.id}</li>
-                  ))}
-                </ul>
-              </td>
-              <td>
-                <div className="btn-group" role="group">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary btn-sm"
-                    title="Visualizza"
-                  >
-                    <i className="fas fa-eye"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-success btn-sm"
-                    title="Modifica"
-                  >
-                    <i className="fas fa-edit"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger btn-sm"
-                    title="Elimina"
-                  >
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      title={title}
+      data={items}
+      columns={columns}
+      actions={actions}
+    ></Table>
   );
 }
 

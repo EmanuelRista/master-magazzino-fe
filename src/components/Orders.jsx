@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../thunks/ordersThunk";
+import Table from "./Table";
 
 function Orders() {
   const dispatch = useDispatch();
@@ -18,54 +19,44 @@ function Orders() {
     return <div className="container mt-5">Errore: {error}</div>;
   }
 
+  const title = "Ordini";
+
+  // Definizione delle colonne
+  const columns = [
+    { label: "Data Ordine", key: "order_date" },
+    { label: "Stato", key: "order_status" },
+    { label: "ID Fornitore", key: "supplier_id" },
+  ];
+
+  // Definizione delle azioni
+  const actions = [
+    {
+      label: "Visualizza",
+      icon: "eye",
+      color: "primary",
+      onClick: (item) => console.log("Visualizza", item),
+    },
+    {
+      label: "Modifica",
+      icon: "edit",
+      color: "success",
+      onClick: (item) => console.log("Modifica", item),
+    },
+    {
+      label: "Elimina",
+      icon: "trash",
+      color: "danger",
+      onClick: (item) => console.log("Elimina", item),
+    },
+  ];
+
   return (
-    <div className="container mt-5">
-      <h1>Ordini</h1>
-      <table className="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Data Ordine</th>
-            <th scope="col">Stato</th>
-            <th scope="col">ID Fornitore</th>
-            <th scope="col">Azioni</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((order) => (
-            <tr key={order.id}>
-              <td>{order.order_date}</td>
-              <td>{order.order_status}</td>
-              <td>{order.supplier_id}</td>
-              <td>
-                <div className="btn-group" role="group">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary btn-sm"
-                    title="Visualizza"
-                  >
-                    <i className="fas fa-eye"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-success btn-sm"
-                    title="Modifica"
-                  >
-                    <i className="fas fa-edit"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger btn-sm"
-                    title="Elimina"
-                  >
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      title={title}
+      data={items}
+      columns={columns}
+      actions={actions}
+    ></Table>
   );
 }
 

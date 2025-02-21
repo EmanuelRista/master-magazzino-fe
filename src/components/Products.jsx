@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../thunks/productsThunk";
 import Table from "./Table";
+import TableFilter from "./TableFilter";
 
 function Products() {
   const dispatch = useDispatch();
@@ -36,30 +37,11 @@ function Products() {
     },
   ];
 
-  // Definizione delle azioni
-  const actions = [
-    {
-      label: "Visualizza",
-      icon: "eye",
-      color: "primary",
-      onClick: (item) => console.log("Visualizza", item),
-    },
-    {
-      label: "Modifica",
-      icon: "edit",
-      color: "success",
-      onClick: (item) => console.log("Modifica", item),
-    },
-    {
-      label: "Elimina",
-      icon: "trash",
-      color: "danger",
-      onClick: (item) => console.log("Elimina", item),
-    },
-  ];
-
   return (
-    <Table title={title} data={items} columns={columns} actions={actions} />
+    <React.Fragment>
+      <TableFilter></TableFilter>
+      <Table title={title} data={items} columns={columns} />
+    </React.Fragment>
   );
 }
 

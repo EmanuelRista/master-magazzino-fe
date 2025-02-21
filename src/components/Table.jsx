@@ -1,6 +1,28 @@
 import React from "react";
 
-function Table({ title, data, columns, actions }) {
+function Table({ title, data, columns }) {
+  // Definizione delle azioni
+  const actions = [
+    {
+      label: "Visualizza",
+      icon: "eye",
+      color: "primary",
+      onClick: (item) => console.log("Visualizza", item),
+    },
+    {
+      label: "Modifica",
+      icon: "edit",
+      color: "success",
+      onClick: (item) => console.log("Modifica", item),
+    },
+    {
+      label: "Elimina",
+      icon: "trash",
+      color: "danger",
+      onClick: (item) => console.log("Elimina", item),
+    },
+  ];
+
   return (
     <div className="container mt-5">
       <h1>{title}</h1>

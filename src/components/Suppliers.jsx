@@ -58,14 +58,7 @@ function Suppliers() {
     },
   ];
 
-  return (
-    <Table
-      title={title}
-      data={items}
-      columns={columns}
-      actions={actions}
-    ></Table>
-  );
+  return <Table title={title} data={items} columns={columns}></Table>;
 }
 
 export default Suppliers;

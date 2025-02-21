@@ -22,35 +22,7 @@ function Categories() {
 
   const columns = [{ label: "Nome categoria", key: "category_name" }];
 
-  const actions = [
-    {
-      label: "Visualizza",
-      icon: "eye",
-      color: "primary",
-      onClick: (item) => console.log("Visualizza", item),
-    },
-    {
-      label: "Modifica",
-      icon: "edit",
-      color: "success",
-      onClick: (item) => console.log("Modifica", item),
-    },
-    {
-      label: "Elimina",
-      icon: "trash",
-      color: "danger",
-      onClick: (item) => console.log("Elimina", item),
-    },
-  ];
-
-  return (
-    <Table
-      title={title}
-      data={items}
-      columns={columns}
-      actions={actions}
-    ></Table>
-  );
+  return <Table title={title} data={items} columns={columns}></Table>;
 }
 
 export default Categories;
